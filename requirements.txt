@@ -1,0 +1,3 @@
+blist
+matplotlib
+numpy
