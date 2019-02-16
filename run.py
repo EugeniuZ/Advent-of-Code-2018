@@ -11,12 +11,12 @@ def main():
 
     data = module.read_input('%s/input.txt' % day)
 
-    if hasattr(module, 'test_solution_1'):
-        module.test_solution_1()
+    if hasattr(module, 'test_solution1'):
+        module.test_solution1()
     print('Answer 1: %s' % _timeit(module.solution1, data))
 
-    if hasattr(module, 'test_solution_2'):
-        module.test_solution_2()
+    if hasattr(module, 'test_solution2'):
+        module.test_solution2()
     print('Answer 2: %s' % _timeit(module.solution2, data))
 
 
