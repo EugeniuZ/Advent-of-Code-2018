@@ -1,11 +1,12 @@
-from collections import deque
-
+import sys
 
 CLAY = '#'
 SAND = '.'
 SOURCE = '+'
 WATER = '~'
 WET_SAND = '|'
+
+TILE_SUPPORT = {CLAY, WATER}
 
 
 def read_input(filename):
@@ -16,8 +17,9 @@ def read_input(filename):
 def solution1(data):
     source = data['source']
     grid = data['grid']  # modify in place to reuse the result in second solution
+    sys.setrecursionlimit(len(grid) + len(grid[0]))
     try:
-        _pour_water(source[0], source[1], grid)
+        _pour_water(source[0] + 1, source[1], grid)
     finally:
         with open('solution17.txt', 'w') as f:
             f.write(_make_printable_grid(grid))
@@ -68,24 +70,17 @@ def _get_points(line):
         raise Exception('Unexpected input: %s' % line)
 
 
-def _pour_water(sx, sy, grid):
-    stack = deque()
-    max_row = len(grid) - 1
-    sx += 1  # skip source
-    while grid[sx][sy] == SAND and sx <= max_row:
-        stack.append((sx, sy))
-        sx += 1
-    TILE_SUPPORT = {CLAY, WATER}
-    while stack:
-        x, y = stack.pop()
-        tile = grid[x][y]
-        if tile in TILE_SUPPORT:
-            continue  # filled-in by another stream
+def _pour_water(x, y, grid):
+    if x == len(grid):
+        return
+    tile = grid[x][y]
+    if tile in TILE_SUPPORT:
+        return
+    if tile == SAND:
         grid[x][y] = WET_SAND
-        if x == max_row:
-            continue
-        if grid[x+1][y] == WET_SAND: # no support -> backtracking the way up
-            continue
+        _pour_water(x + 1, y, grid)
+        if x == len(grid) - 1 or grid[x + 1][y] not in TILE_SUPPORT:
+            return
         # spread left
         ly = y - 1
         l_hit = False
@@ -110,18 +105,11 @@ def _pour_water(sx, sy, grid):
                 ry += 1
         if l_hit and r_hit:  # inside a clay pot
             for yy in range(ly + 1, ry):
-                assert grid[x][yy] not in TILE_SUPPORT
                 grid[x][yy] = WATER
         if not l_hit:
-            lx = x
-            while lx <= max_row and grid[lx][ly] == SAND:
-                stack.append((lx, ly))
-                lx += 1
+            _pour_water(x, ly, grid)
         if not r_hit:
-            rx = x
-            while rx <= max_row and grid[rx][ry] == SAND:
-                stack.append((rx, ry))
-                rx += 1
+            _pour_water(x, ry, grid)
 
 
 def test_read_input():
@@ -192,9 +180,3 @@ y=13, x=498..504"""
 
 def _make_printable_grid(grid):
     return '\n'.join(''.join(row) for row in grid)
-
-
-
-
-
-
