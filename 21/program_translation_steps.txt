@@ -1,0 +1,33 @@
+ 0: seti 123 0 1          	|   B = 123                             | B = 123
+ 1: bani 1 456 1 		  	|   B = B & 456  						| while B != 72:
+ 2: eqri 1 72 1 			|   B = B == 72                         | 	B = B & 456
+ 3: addr 1 4 4 				|   if B == 72 goto "seti 0 7 1"      	| 	
+ 4: seti 0 0 4              |   else goto "bani 1 456 1"            | ---------------------------------
+
+
+ 5: seti 0 7 1 				|   B = 0 								| B = 0
+ 6: bori 1 65536 5          |   F = B | 0x10000  					| l2:
+ 7: seti 8595037 6 1        |   B = 8595037  (0x83265d) 			| F = B | 0x10000
+ 8: bani 5 255 3 			|   D = F & 0xFF                        | B = 8595037  # (0x83265d)
+ 9: addr 1 3 1              |   B = B + D                           | l4:
+10: bani 1 16777215 1       |   B = B & 0xffffff					| D = F & 0xFF
+11: muli 1 65899 1         	|   B = B * 65899  (0x1016b)            | B = B + D
+12: bani 1 16777215 1       |   B = B & 0xffffff                    | B = B & 0xFFFFFF
+13: gtir 256 5 3            |   D = 0x100 > F                       | B = B * 65899
+14: addr 3 4 4              |   if 256 > F goto "seti 27 4 4"	  	| B = B & 0xFFFFFF
+15: addi 4 1 4              |   E = E + 1 -> goto "seti 0 2 3"      | D = 256 > F
+16: seti 27 4 4             |   goto "eqrr 1 0 3"                   | if D: goto l1
+17: seti 0 2 3              |   D = 0                               | D = 0
+18: addi 3 1 2              |   C = D + 1                           | l5:
+19: muli 2 256 2            |   C = C << 8 							| C = D + 1
+20: gtrr 2 5 2              |   C = C > F 							| C = C << 8     
+21: addr 2 4 4              |   if C > F goto "seti 25 4 4" 	  	| C = C > F
+22: addi 4 1 4              |   E = E + 1 -> goto 24				| if C: goto l3     
+23: seti 25 4 4             |   goto "set 3 8 5" 					| D = D + 1
+24: addi 3 1 3              |   D = D + 1                           | goto l5 
+25: seti 17 8 4             |   goto "add 3 1 2"                    | l3:
+26: setr 3 8 5              |   F = D                               | F = D
+27: seti 7 5 4              |   goto "bani 5 255 3"  				| goto l4 
+28: eqrr 1 0 3              |   D = B == A                          | l1: 
+29: addr 3 4 4              |   if B == A halt						| if B == A: print('B=%d' % B); return
+30: seti 5 9 4              |   E = 5 -> goto "bori 1 65536 5"		| goto l2
