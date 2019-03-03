@@ -17,13 +17,13 @@ def main():
         print('Testing solution1...')
         module.test_solution1()
         print('Success')
-    print('Answer 1: %s' % _timeit(module.solution1, data))
+    print('Answer 1: %s' % str(_timeit(module.solution1, data)))
 
     if hasattr(module, 'test_solution2'):
         print('Testing solution2...')
         module.test_solution2()
         print('Success')
-    print('Answer 2: %s' % _timeit(module.solution2, data))
+    print('Answer 2: %s' % str(_timeit(module.solution2, data)))
 
 
 def _timeit(func, *args, **kwargs):
